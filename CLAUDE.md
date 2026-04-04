@@ -1,7 +1,7 @@
-zxcvzxcvzxcvzxcvzxcv# Jobhunter Project
+# Jobhunter Project
 
 ## User Profile
-@CV 2025.pdf
+@cv.md
 @preferences.md
 
 ## Instructions
