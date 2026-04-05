@@ -1,2 +1,12 @@
 CV 2025.PDF
 cv.md
+Anto Leivategija CV.PDF
+Anto Leivategija Cover Letter.PDF
+
+# Claude settings
+.claude/settings.json
+.claude/settings.local.json
+
+# Scripts with credentials
+webapp/scripts/seed-jobs.mjs
+
