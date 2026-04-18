@@ -16,7 +16,7 @@ interface Props {
 
 export function JobsPage({ initialJobs }: Props) {
   const [jobs, setJobs] = useState<Job[]>(initialJobs)
-  const [activeStatus, setActiveStatus] = useState<FilterStatus>('needs_apply')
+  const [activeStatus, setActiveStatus] = useState<FilterStatus>('prospect')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
 
@@ -37,7 +37,7 @@ export function JobsPage({ initialJobs }: Props) {
   function handleCreated(job: Job) {
     setJobs((prev) => [job, ...prev])
     setSelectedId(job.id)
-    setActiveStatus('needs_apply')
+    setActiveStatus('prospect')
     setShowAdd(false)
   }
 
@@ -50,7 +50,7 @@ export function JobsPage({ initialJobs }: Props) {
       <div className="flex items-center justify-between px-4 py-2 bg-slate-50 border-b border-slate-200">
         <span className="text-xs text-slate-500">
           {filtered.length} {filtered.length === 1 ? 'job' : 'jobs'}
-          {activeStatus !== 'all' ? ` · ${filtered.filter(j => j.status === 'needs_apply' || j.status === 'applied').length} active` : ''}
+          {activeStatus !== 'all' ? ` · ${filtered.filter(j => j.status === 'prospect' || j.status === 'applied').length} active` : ''}
         </span>
         <button
           onClick={() => setShowAdd(true)}

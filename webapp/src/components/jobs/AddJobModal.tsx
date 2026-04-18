@@ -26,7 +26,7 @@ type FormValues = {
 export function AddJobModal({ onCreated, onClose }: Props) {
   const [saving, setSaving] = useState(false)
   const { register, handleSubmit } = useForm<FormValues>({
-    defaultValues: { status: 'needs_apply' },
+    defaultValues: { status: 'prospect' },
   })
 
   async function onSubmit(values: FormValues) {
@@ -102,9 +102,10 @@ export function AddJobModal({ onCreated, onClose }: Props) {
           <div>
             <label className={labelCls}>Status</label>
             <select {...register('status')} className={inputCls}>
+              <option value="prospect">Prospect</option>
               <option value="needs_apply">Needs Apply</option>
+              <option value="ai_apply_failed">AI Apply Failed</option>
               <option value="applied">Applied</option>
-              <option value="skipped">Skipped</option>
             </select>
           </div>
           <div>

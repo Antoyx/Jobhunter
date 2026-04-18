@@ -1,13 +1,13 @@
 export type JobStatus =
+  | 'prospect'
   | 'needs_apply'
+  | 'ai_apply_failed'
   | 'applied'
   | 'replied'
   | 'interview'
   | 'offer'
   | 'rejected'
-  | 'skipped'
   | 'closed'
-  | 'archived'
 
 export interface Job {
   id: string
@@ -42,27 +42,27 @@ export interface Platform {
 }
 
 export const STATUS_LABELS: Record<JobStatus, string> = {
+  prospect: 'Prospect',
   needs_apply: 'Needs Apply',
+  ai_apply_failed: 'AI Apply Failed',
   applied: 'Applied',
   replied: 'Replied',
   interview: 'Interview',
   offer: 'Offer',
   rejected: 'Rejected',
-  skipped: 'Skipped',
   closed: 'Closed',
-  archived: 'Archived',
 }
 
 export const STATUS_ORDER: JobStatus[] = [
+  'prospect',
   'needs_apply',
+  'ai_apply_failed',
   'applied',
   'replied',
   'interview',
   'offer',
   'rejected',
-  'skipped',
   'closed',
-  'archived',
 ]
 
 export const TIER_LABELS: Record<1 | 2 | 3, string> = {
