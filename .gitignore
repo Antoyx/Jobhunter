@@ -1,7 +1,6 @@
-CV 2025.PDF
+*.pdf
+*.PDF
 cv.md
-Anto Leivategija CV.PDF
-Anto Leivategija Cover Letter.PDF
 
 # Claude settings
 .claude/settings.json
