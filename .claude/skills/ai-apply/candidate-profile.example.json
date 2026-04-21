@@ -1,0 +1,15 @@
+{
+  "_comment": "Copy this file to candidate-profile.json and fill in your details. candidate-profile.json is gitignored.",
+  "name": "Your Full Name",
+  "firstName": "Your First Name",
+  "lastName": "Your Last Name",
+  "email": "your@email.com",
+  "phone": "+1234567890",
+  "location": "City, Country",
+  "city": "City",
+  "country": "Country",
+  "linkedin": "https://www.linkedin.com/in/your-profile/",
+  "workAuthorization": "EU citizen — eligible to work in any EU country",
+  "cvPath": "/absolute/path/to/Your CV.pdf",
+  "coverLetterPath": "/absolute/path/to/Your Cover Letter.pdf"
+}

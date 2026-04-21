@@ -1,0 +1,57 @@
+{
+  "domains": {
+    "boards.greenhouse.io": {
+      "success_count": 0,
+      "failure_count": 2,
+      "failure_reasons": [
+        "job_listing_expired",
+        "form_validation_error"
+      ],
+      "last_failure_reason": "form_validation_error",
+      "notes": "Wallapop form uses react-select dropdowns and input[id^='question_'] for custom questions. Must target by label 'for' attribute, not generic selector. reCAPTCHA v3 badge present — may block headless. FREE NOW job was expired.",
+      "last_updated": "2026-04-19"
+    },
+    "job-boards.eu.greenhouse.io": {
+      "success_count": 0,
+      "failure_count": 2,
+      "failure_reasons": [
+        "uncertain_result_no_confirmation",
+        "job_not_found_on_board"
+      ],
+      "last_failure_reason": "uncertain_result_no_confirmation",
+      "notes": "Wallapop Growth form submitted but no email confirmation — reCAPTCHA v3 likely rejected headless session. Bitpanda Web3/Crypto PM job no longer listed on board. Apply manually for Wallapop.",
+      "last_updated": "2026-04-19"
+    },
+    "jobs.eu.lever.co": {
+      "success_count": 0,
+      "failure_count": 1,
+      "failure_reasons": [
+        "captcha"
+      ],
+      "last_failure_reason": "captcha",
+      "notes": "OLX uses hCaptcha with visual shape-matching puzzle — cannot solve headlessly. Requires manual submission.",
+      "last_updated": "2026-04-19"
+    },
+    "jobs.lever.co": {
+      "success_count": 0,
+      "failure_count": 2,
+      "failure_reasons": [
+        "captcha",
+        "captcha"
+      ],
+      "last_failure_reason": "captcha",
+      "notes": "hCaptcha (visual image-selection) appears on form submission — cannot solve headlessly. Also has many custom questions (notice period, salary, right-to-work, UK commute). Requires manual submission.",
+      "last_updated": "2026-04-20"
+    },
+    "www.welcometothejungle.com": {
+      "success_count": 0,
+      "failure_count": 1,
+      "failure_reasons": [
+        "job_listing_expired"
+      ],
+      "last_failure_reason": "job_listing_expired",
+      "notes": "Glovo job returned 404 — listing removed. WttJ pages are region-specific; en-US URL may differ from es-ES. Always verify URL returns 200 before insert.",
+      "last_updated": "2026-04-20"
+    }
+  }
+}

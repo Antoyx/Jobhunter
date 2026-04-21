@@ -1,0 +1,36 @@
+{
+  "eval_id": 1,
+  "configuration": "without_skill",
+  "assertions": [
+    {
+      "text": "References reading preferences.json for batch_size and timeout settings",
+      "passed": false,
+      "evidence": "No mention of preferences.json — no concept of batch size or timeout config"
+    },
+    {
+      "text": "References reading site-difficulty.json before attempting jobs",
+      "passed": false,
+      "evidence": "No site difficulty tracking mentioned at all"
+    },
+    {
+      "text": "Shows the correct Supabase query filtering by status = needs_apply",
+      "passed": true,
+      "evidence": "Shows SQL query with WHERE status = 'needs_apply' — correct filter identified"
+    },
+    {
+      "text": "Mentions loading candidate-profile.json (not hardcoded personal data)",
+      "passed": false,
+      "evidence": "No candidate-profile.json concept — would need to re-derive info from CV or CLAUDE.md"
+    },
+    {
+      "text": "Shows summary.md output in apply-runs/ folder with table format",
+      "passed": false,
+      "evidence": "No structured output format mentioned — results would only appear inline in terminal"
+    },
+    {
+      "text": "Shows terminal summary with applied/failed/skipped counts",
+      "passed": false,
+      "evidence": "No terminal summary format described"
+    }
+  ]
+}

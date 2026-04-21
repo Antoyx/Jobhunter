@@ -1,0 +1,36 @@
+{
+  "eval_id": 1,
+  "configuration": "with_skill",
+  "assertions": [
+    {
+      "text": "References reading preferences.json for batch_size and timeout settings",
+      "passed": true,
+      "evidence": "Explicitly states 'Load preferences — batch_size: 5, max_time_per_job_seconds: 180, headless: false'"
+    },
+    {
+      "text": "References reading site-difficulty.json before attempting jobs",
+      "passed": true,
+      "evidence": "Step 2 'Site Difficulty Pre-Screening' explains the skip logic with exact thresholds"
+    },
+    {
+      "text": "Shows the correct Supabase query filtering by status = needs_apply",
+      "passed": true,
+      "evidence": "Shows exact JS query: .from('jobs').select('*').eq('status', 'needs_apply').limit(5)"
+    },
+    {
+      "text": "Mentions loading candidate-profile.json (not hardcoded personal data)",
+      "passed": true,
+      "evidence": "Step 4 says 'Fill form from candidate-profile.json fields' — no hardcoded personal details"
+    },
+    {
+      "text": "Shows summary.md output in apply-runs/ folder with table format",
+      "passed": true,
+      "evidence": "Full summary.md shown with markdown table, applied/failed/skipped sections"
+    },
+    {
+      "text": "Shows terminal summary with applied/failed/skipped counts",
+      "passed": true,
+      "evidence": "Terminal output box with exact format from SKILL.md including emoji counters"
+    }
+  ]
+}

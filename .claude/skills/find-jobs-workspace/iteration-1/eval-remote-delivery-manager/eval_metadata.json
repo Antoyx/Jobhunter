@@ -1,0 +1,35 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-remote-delivery-manager",
+  "prompt": "search for remote delivery manager or program manager roles and add them — I want to see what's out there",
+  "assertions": [
+    {
+      "id": "summary_printed",
+      "description": "Output contains the ━━━ terminal summary block with Found/Verified/Skipped/Added counts"
+    },
+    {
+      "id": "all_jobs_have_salary",
+      "description": "Every inserted job has non-null salary_min and salary_max"
+    },
+    {
+      "id": "estimated_salary_tagged",
+      "description": "Any inserted job without a listed salary has '[estimated salary]' in notes"
+    },
+    {
+      "id": "status_is_prospect",
+      "description": "All inserted jobs use status 'prospect'"
+    },
+    {
+      "id": "source_field_set",
+      "description": "Inserted jobs have source set to 'find-jobs skill'"
+    },
+    {
+      "id": "location_filter_respected",
+      "description": "All inserted jobs are Remote, Hybrid, or Barcelona — no office-only jobs in unrelated cities"
+    },
+    {
+      "id": "at_least_one_job_inserted",
+      "description": "At least one job was successfully inserted into Supabase"
+    }
+  ]
+}

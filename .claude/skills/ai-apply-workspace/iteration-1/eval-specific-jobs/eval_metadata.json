@@ -1,0 +1,37 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-specific-jobs",
+  "prompt": "I added 3 new jobs to my tracker with status needs_apply. Can you apply to them for me?",
+  "assertions": [
+    {
+      "text": "Describes asking user for salary interactively (not using a default value)",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Explains saving salary to salary-kb.json keyed by company::title",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Describes fuzzy-matching unknown questions against qa-kb.json before asking user",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows site-difficulty.json update after a failure with login_required reason",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows failure note appended to Supabase jobs.notes field with date and reason",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "States only guest/one-click apply used — no login flows",
+      "passed": null,
+      "evidence": null
+    }
+  ]
+}

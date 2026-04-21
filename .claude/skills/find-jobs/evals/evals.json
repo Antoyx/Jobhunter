@@ -1,0 +1,23 @@
+{
+  "skill_name": "find-jobs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "find me some product manager jobs in Barcelona and add them to the pipeline",
+      "expected_output": "Skill runs a multi-query job search, verifies URLs are live, inserts jobs as 'prospect' in Supabase with salary populated (estimated or real), prints a summary with counts of found/verified/skipped/added, and lists each added job with company, title, location and salary range.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "search for remote delivery manager or program manager roles and add them — I want to see what's out there",
+      "expected_output": "Skill searches remote job boards (Himalayas, WeWorkRemotely, LinkedIn) for Delivery Manager and Program Manager roles, filters to relevant matches, verifies URLs, deduplicates against the DB, inserts with salary estimates tagged [estimated salary] in notes where salary is not listed, and prints a clean summary.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "go find jobs but only add ones from sites where the AI apply has worked before — I want to batch apply right after",
+      "expected_output": "Skill reads site-difficulty.json to identify ai_friendly_domains (success_count > 0), sets site_preference effectively to ai_friendly, searches for jobs, prioritizes results from those domains, and inserts them as prospects. The listing should skew toward verified-applyable platforms.",
+      "files": []
+    }
+  ]
+}

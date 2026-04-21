@@ -1,0 +1,36 @@
+{
+  "eval_id": 3,
+  "configuration": "with_skill",
+  "assertions": [
+    {
+      "text": "Correctly skips or attempts all 5 jobs based on site-difficulty.json (empty = all attempted)",
+      "passed": true,
+      "evidence": "Pre-screening step correctly explains: empty site-difficulty means all 5 jobs attempted normally"
+    },
+    {
+      "text": "Marks LinkedIn job as failed with reason login_required",
+      "passed": true,
+      "evidence": "Job 2 outcome: '❌ Failed — login_required', Supabase note includes 'login_required' reason"
+    },
+    {
+      "text": "Marks CaptchaLand job as failed with reason captcha",
+      "passed": true,
+      "evidence": "Job 5 outcome: '❌ Failed — captcha', Supabase note includes 'captcha' reason"
+    },
+    {
+      "text": "Shows summary.md with correct markdown table format including emoji result indicators",
+      "passed": true,
+      "evidence": "Full summary.md shown with ✅/❌ emojis in table, applied/failed/skipped sections, KB updates"
+    },
+    {
+      "text": "Shows terminal output with the bordered summary box format from SKILL.md",
+      "passed": true,
+      "evidence": "Terminal output uses ━ border characters and shows applied/failed/skipped with job details"
+    },
+    {
+      "text": "Shows site-difficulty.json after the run with correct domain entries and failure reasons",
+      "passed": true,
+      "evidence": "Full site-difficulty.json shown with all 5 domains, correct success/failure counts and reasons"
+    }
+  ]
+}

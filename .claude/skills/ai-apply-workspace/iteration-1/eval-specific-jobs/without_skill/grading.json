@@ -1,0 +1,36 @@
+{
+  "eval_id": 2,
+  "configuration": "without_skill",
+  "assertions": [
+    {
+      "text": "Describes asking user for salary interactively (not using a default value)",
+      "passed": false,
+      "evidence": "Mentions salary as a problematic field but no structured interactive ask described"
+    },
+    {
+      "text": "Explains saving salary to salary-kb.json keyed by company::title",
+      "passed": false,
+      "evidence": "No salary-kb.json concept — no persistent salary storage mentioned"
+    },
+    {
+      "text": "Describes fuzzy-matching unknown questions against qa-kb.json before asking user",
+      "passed": false,
+      "evidence": "No qa-kb.json concept — would ask user repeatedly for same questions"
+    },
+    {
+      "text": "Shows site-difficulty.json update after a failure with login_required reason",
+      "passed": false,
+      "evidence": "No site-difficulty.json concept — no domain tracking at all"
+    },
+    {
+      "text": "Shows failure note appended to Supabase jobs.notes field with date and reason",
+      "passed": false,
+      "evidence": "Notes that status updates may not happen correctly — no structured failure note format"
+    },
+    {
+      "text": "States only guest/one-click apply used — no login flows",
+      "passed": false,
+      "evidence": "Would likely waste 3 minutes on LinkedIn before giving up — no fast-fail rule"
+    }
+  ]
+}

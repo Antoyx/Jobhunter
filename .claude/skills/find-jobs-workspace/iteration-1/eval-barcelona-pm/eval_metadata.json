@@ -1,0 +1,35 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-barcelona-pm",
+  "prompt": "find me some product manager jobs in Barcelona and add them to the pipeline",
+  "assertions": [
+    {
+      "id": "summary_printed",
+      "description": "Output contains the ━━━ terminal summary block with Found/Verified/Skipped/Added counts"
+    },
+    {
+      "id": "all_jobs_have_salary",
+      "description": "Every job in jobs_attempted.json with inserted=true has non-null salary_min and salary_max"
+    },
+    {
+      "id": "estimated_salary_tagged",
+      "description": "Any inserted job that had no salary listed on the page has '[estimated salary]' in its notes field"
+    },
+    {
+      "id": "status_is_prospect",
+      "description": "All inserted jobs use status 'prospect' (not needs_apply or applied)"
+    },
+    {
+      "id": "source_field_set",
+      "description": "Inserted jobs have source set to 'find-jobs skill'"
+    },
+    {
+      "id": "relevant_titles_only",
+      "description": "All jobs attempted have titles relevant to PM/Delivery/Program Manager — no clearly unrelated roles like Sales Engineer or Data Analyst"
+    },
+    {
+      "id": "at_least_one_job_inserted",
+      "description": "At least one job was successfully inserted into Supabase"
+    }
+  ]
+}

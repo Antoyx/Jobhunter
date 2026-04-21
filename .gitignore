@@ -1,6 +1,7 @@
 *.pdf
 *.PDF
 cv.md
+generate_cv*.py
 
 # Claude settings
 .claude/settings.json
@@ -9,4 +10,10 @@ cv.md
 # Scripts with credentials
 webapp/scripts/seed-jobs.mjs
 scripts/
+
+# AI Apply skill — personal data and run outputs
+apply-runs/
+.claude/skills/ai-apply/candidate-profile.json
+.claude/skills/ai-apply/salary-kb.json
+.claude/skills/ai-apply/qa-kb.json
 

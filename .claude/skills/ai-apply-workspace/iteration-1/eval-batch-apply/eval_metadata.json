@@ -1,0 +1,37 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-batch-apply",
+  "prompt": "Go ahead and apply to the jobs that are waiting in my tracker",
+  "assertions": [
+    {
+      "text": "References reading preferences.json for batch_size and timeout settings",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "References reading site-difficulty.json before attempting jobs",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows the correct Supabase query filtering by status = needs_apply",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Mentions loading candidate-profile.json (not hardcoded personal data)",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows summary.md output in apply-runs/ folder with table format",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows terminal summary with applied/failed/skipped counts",
+      "passed": null,
+      "evidence": null
+    }
+  ]
+}

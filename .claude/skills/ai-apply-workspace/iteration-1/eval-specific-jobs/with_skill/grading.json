@@ -1,0 +1,36 @@
+{
+  "eval_id": 2,
+  "configuration": "with_skill",
+  "assertions": [
+    {
+      "text": "Describes asking user for salary interactively (not using a default value)",
+      "passed": true,
+      "evidence": "Shows exact user-facing prompt: 'What salary are you targeting for the Product Manager role at Acme Corp?'"
+    },
+    {
+      "text": "Explains saving salary to salary-kb.json keyed by company::title",
+      "passed": true,
+      "evidence": "Shows exact JSON: {'Acme Corp::Product Manager': 72000} and explains key format rule"
+    },
+    {
+      "text": "Describes fuzzy-matching unknown questions against qa-kb.json before asking user",
+      "passed": true,
+      "evidence": "Step 3 shows QA KB check before asking, mentions 80%+ fuzzy match threshold"
+    },
+    {
+      "text": "Shows site-difficulty.json update after a failure with login_required reason",
+      "passed": true,
+      "evidence": "Shows full before/after JSON including failure_reasons array and skip trigger explanation"
+    },
+    {
+      "text": "Shows failure note appended to Supabase jobs.notes field with date and reason",
+      "passed": true,
+      "evidence": "Shows exact Supabase update JS code and resulting notes field value with timestamp"
+    },
+    {
+      "text": "States only guest/one-click apply used — no login flows",
+      "passed": true,
+      "evidence": "'If login wall only → fail immediately, never log in' stated explicitly in workflow"
+    }
+  ]
+}

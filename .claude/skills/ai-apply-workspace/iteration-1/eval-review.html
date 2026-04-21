@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ai-apply Skill — Eval Review</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+  .header { background: #1a1d27; border-bottom: 1px solid #2d3148; padding: 20px 32px; display: flex; align-items: center; gap: 16px; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .badge { background: #6366f1; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid #2d3148; background: #1a1d27; padding: 0 32px; }
+  .tab { padding: 12px 20px; cursor: pointer; border-bottom: 2px solid transparent; font-size: 14px; color: #94a3b8; transition: all 0.2s; }
+  .tab.active { color: #6366f1; border-bottom-color: #6366f1; }
+  .tab:hover:not(.active) { color: #cbd5e1; }
+  .content { padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Benchmark tab */
+  .bench-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .bench-card { background: #1a1d27; border: 1px solid #2d3148; border-radius: 10px; padding: 20px; }
+  .bench-card .label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .bench-card .value { font-size: 32px; font-weight: 700; }
+  .bench-card .value.green { color: #22c55e; }
+  .bench-card .value.red { color: #ef4444; }
+  .bench-card .value.blue { color: #6366f1; }
+  .bench-card .sub { font-size: 13px; color: #64748b; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: #1a1d27; border-radius: 10px; overflow: hidden; border: 1px solid #2d3148; }
+  th { background: #12141f; padding: 12px 16px; text-align: left; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #2d3148; }
+  td { padding: 12px 16px; border-bottom: 1px solid #1e2235; font-size: 14px; }
+  tr:last-child td { border-bottom: none; }
+  .pass { color: #22c55e; font-weight: 600; }
+  .fail { color: #ef4444; font-weight: 600; }
+  .delta { color: #a78bfa; font-weight: 600; }
+  h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #cbd5e1; }
+  .section { margin-bottom: 32px; }
+  .analyst { background: #1a1d27; border: 1px solid #2d3148; border-left: 3px solid #6366f1; border-radius: 8px; padding: 16px 20px; }
+  .analyst p { font-size: 14px; line-height: 1.7; color: #94a3b8; margin-bottom: 8px; }
+  .analyst p:last-child { margin-bottom: 0; }
+  .analyst strong { color: #e2e8f0; }
+
+  /* Outputs tab */
+  .eval-nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .eval-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #2d3148; background: #1a1d27; color: #94a3b8; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+  .eval-btn.active { background: #6366f1; border-color: #6366f1; color: white; }
+  .eval-btn:hover:not(.active) { border-color: #4a5068; color: #cbd5e1; }
+  .eval-content { display: none; }
+  .eval-content.active { display: block; }
+  .eval-prompt { background: #1a1d27; border: 1px solid #2d3148; border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; font-size: 14px; color: #94a3b8; }
+  .eval-prompt strong { color: #e2e8f0; display: block; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .output-box { background: #1a1d27; border: 1px solid #2d3148; border-radius: 10px; overflow: hidden; }
+  .output-box.skill { border-top: 3px solid #22c55e; }
+  .output-box.no-skill { border-top: 3px solid #ef4444; }
+  .output-header { padding: 12px 16px; border-bottom: 1px solid #2d3148; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .output-header .config-skill { color: #22c55e; }
+  .output-header .config-baseline { color: #ef4444; }
+  .output-body { padding: 16px; max-height: 500px; overflow-y: auto; }
+  pre { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: #cbd5e1; }
+  .assertions-grid { display: grid; gap: 8px; margin-top: 16px; }
+  .assertion { display: flex; gap: 12px; align-items: flex-start; padding: 10px 12px; border-radius: 6px; font-size: 13px; }
+  .assertion.pass-a { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
+  .assertion.fail-a { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
+  .assertion-icon { font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+  .assertion-text { color: #cbd5e1; }
+  .assertion-evidence { color: #64748b; font-size: 12px; margin-top: 3px; }
+  .score-chip { padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .score-chip.full { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .score-chip.zero { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .score-chip.partial { background: rgba(234,179,8,0.15); color: #eab308; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>ai-apply Skill — Eval Review</h1>
+  <span class="badge">Iteration 1</span>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="showTab('outputs')">Outputs</div>
+  <div class="tab" onclick="showTab('benchmark')">Benchmark</div>
+</div>
+
+<div class="content">
+
+  <!-- OUTPUTS TAB -->
+  <div id="panel-outputs" class="panel active">
+    <div class="eval-nav">
+      <button class="eval-btn active" onclick="showEval('eval1')">1 · Batch Apply Trigger</button>
+      <button class="eval-btn" onclick="showEval('eval2')">2 · Specific Jobs + KBs</button>
+      <button class="eval-btn" onclick="showEval('eval3')">3 · Full Batch Run Simulation</button>
+    </div>
+
+    <!-- Eval 1 -->
+    <div id="eval1" class="eval-content active">
+      <div class="eval-prompt">
+        <strong>Prompt</strong>
+        "Go ahead and apply to the jobs that are waiting in my tracker"
+      </div>
+      <div class="comparison">
+        <div class="output-box skill">
+          <div class="output-header">
+            <span class="config-skill">✅ with_skill</span>
+            <span class="score-chip full">6 / 6</span>
+          </div>
+          <div class="output-body">
+            <pre>Correctly triggers the ai-apply skill.
+
+WORKFLOW PRODUCED:
+1. Check/install Playwright
+2. Load preferences.json → batch_size: 5, timeout: 180s
+3. Load site-difficulty.json → empty, proceed all
+4. Load salary-kb.json / qa-kb.json
+5. Fetch from Supabase:
+   supabase.from('jobs').select('*')
+     .eq('status','needs_apply').limit(5)
+6. Per job: open URL → detect apply flow →
+   fill from candidate-profile.json →
+   ask salary if missing → submit →
+   update Supabase → save screenshot
+7. Write apply-runs/2026-04-19_14-30/summary.md
+8. Print terminal summary box
+
+SUMMARY.MD SHOWN:
+| Company | Role | Result |
+| Typeform | PM | ✅ Applied |
+| Factorial HR | Growth Lead | ✅ Applied |
+| Glovo | Senior PM | ❌ Failed |
+| Cabify | Product Lead | ✅ Applied |
+| Wallapop | PM | ❌ Failed |
+
+TERMINAL:
+━━━━━━━━━━━━━━━━━━━━━━━━━
+  AI Apply — Run Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Applied:  3
+  ❌ Failed:   2
+  ⏭  Skipped:  0
+━━━━━━━━━━━━━━━━━━━━━━━━━</pre>
+            <div class="assertions-grid">
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">References preferences.json for batch_size and timeout</div><div class="assertion-evidence">Explicitly states 'batch_size: 5, max_time_per_job_seconds: 180, headless: false'</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">References site-difficulty.json before attempting jobs</div><div class="assertion-evidence">Step 2 explains skip logic with exact thresholds</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Shows correct Supabase query for needs_apply</div><div class="assertion-evidence">.from('jobs').select('*').eq('status','needs_apply').limit(5)</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Mentions candidate-profile.json (no hardcoded data)</div><div class="assertion-evidence">'Fill form from candidate-profile.json fields'</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Shows summary.md in apply-runs/ with table format</div><div class="assertion-evidence">Full markdown table with applied/failed/skipped sections</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Shows terminal summary with counts and border format</div><div class="assertion-evidence">━ border box with emoji counters, matches SKILL.md spec</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="output-box no-skill">
+          <div class="output-header">
+            <span class="config-baseline">❌ without_skill</span>
+            <span class="score-chip partial">1 / 6</span>
+          </div>
+          <div class="output-body">
+            <pre>Approaches with general reasoning.
+
+"Sure, I can look into that. Let me first
+fetch the jobs from your Supabase database
+that have `needs_apply` status.
+
+To do this I'll need access to your Supabase
+credentials. Do you have a .env file or
+environment variables set with SUPABASE_URL
+and SUPABASE_SERVICE_ROLE_KEY?"
+
+Can query DB (knows about needs_apply filter)
+but stalls on:
+- Where credentials are stored
+- How to automate browser
+- Where CV PDF is located
+- What to do with salary fields
+- No output format
+- No status update logic
+
+OFFERS INSTEAD:
+- Fetch and show jobs from DB
+- Draft tailored cover letters
+- Write a Playwright script you run yourself
+- Walk through manually
+
+→ Needs significant user intervention
+→ No persistent learning across runs
+→ No run folder / screenshots / summary</pre>
+            <div class="assertions-grid">
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">References preferences.json for batch_size and timeout</div><div class="assertion-evidence">No concept of preferences file — no batch config</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">References site-difficulty.json before attempting jobs</div><div class="assertion-evidence">No site difficulty tracking mentioned at all</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Shows correct Supabase query for needs_apply</div><div class="assertion-evidence">SQL query with WHERE status = 'needs_apply' — correct filter</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Mentions candidate-profile.json</div><div class="assertion-evidence">Would need to re-derive personal info from CV/CLAUDE.md</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Shows summary.md in apply-runs/ with table format</div><div class="assertion-evidence">No structured output format — inline terminal only</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Shows terminal summary with counts and border format</div><div class="assertion-evidence">No terminal summary format described</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eval 2 -->
+    <div id="eval2" class="eval-content">
+      <div class="eval-prompt">
+        <strong>Prompt</strong>
+        "I added 3 new jobs to my tracker with status needs_apply. Can you apply to them for me?"
+      </div>
+      <div class="comparison">
+        <div class="output-box skill">
+          <div class="output-header">
+            <span class="config-skill">✅ with_skill</span>
+            <span class="score-chip full">6 / 6</span>
+          </div>
+          <div class="output-body">
+            <pre>SALARY INTERACTION SHOWN:
+"What salary are you targeting for the
+Product Manager role at Acme Corp? (This
+will be saved so you won't be asked again
+for this company + role combination.)"
+→ User: 72000
+→ Saved: salary-kb.json["Acme Corp::Product Manager"] = 72000
+→ NOT reused for "Acme Corp::Senior PM"
+
+QA KB HANDLING SHOWN:
+"The form asks: 'What is your expected
+notice period?' — I don't have this answer
+saved. What should I enter?"
+→ User: "2 weeks"
+→ Saved to qa-kb.json (general/reusable)
+→ Role-specific questions: applied but NOT saved
+
+SITE-DIFFICULTY UPDATE:
+After linkedin.com failure:
+{
+  "linkedin.com": {
+    "success_count": 0,
+    "failure_count": 1,
+    "failure_reasons": ["login_required"],
+    "last_failure_reason": "login_required"
+  }
+}
+→ Skip trigger at 0 success + 2+ hard failures
+
+SUPABASE FAILURE NOTE:
+"Interesting role, salary 60-80k in JD.
+[AI Apply failed 2026-04-19: login_required
+ — LinkedIn requires account login, no guest
+ apply option found]"</pre>
+            <div class="assertions-grid">
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Asks user for salary interactively</div><div class="assertion-evidence">Exact user-facing prompt shown with company+role context</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Saves salary to salary-kb.json keyed by company::title</div><div class="assertion-evidence">JSON shown: {"Acme Corp::Product Manager": 72000}, key format explained</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Fuzzy-matches unknown questions against qa-kb.json</div><div class="assertion-evidence">Shows 80%+ threshold check before asking user</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Updates site-difficulty.json with login_required failure</div><div class="assertion-evidence">Full before/after JSON, skip trigger threshold explained</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Appends failure note to Supabase jobs.notes</div><div class="assertion-evidence">Exact JS update code + resulting notes field shown</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">States only guest/one-click apply — no login flows</div><div class="assertion-evidence">"If login wall only → fail immediately, never log in"</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="output-box no-skill">
+          <div class="output-header">
+            <span class="config-baseline">❌ without_skill</span>
+            <span class="score-chip zero">0 / 6</span>
+          </div>
+          <div class="output-body">
+            <pre>WITHOUT SKILL — ALL ASSERTIONS FAIL
+
+No salary-kb.json concept
+→ Would ask salary every run, no memory
+
+No qa-kb.json concept
+→ Would ask same questions repeatedly
+
+No site-difficulty.json concept
+→ Would waste 3 min on LinkedIn every time
+
+No structured Supabase failure notes
+→ Status may not update correctly
+
+No guest-only rule
+→ Would attempt LinkedIn login flow
+
+KEY GAPS:
+| Gap | Impact |
+| No salary KB | Asks every time |
+| No QA KB | Repeats questions |
+| No site KB | Wastes time on blockers |
+| No failure notes | Lost context |
+| No guest-only rule | Login attempts |
+| No candidate profile | Re-derives info |
+| No batch config | Uncontrolled scope |
+
+Without skill: stalls at planning,
+needs significant user intervention,
+no persistent learning across runs.</pre>
+            <div class="assertions-grid">
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Asks user for salary interactively</div><div class="assertion-evidence">Mentioned as problematic but no structured ask described</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Saves salary to salary-kb.json keyed by company::title</div><div class="assertion-evidence">No salary-kb.json concept exists</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Fuzzy-matches unknown questions against qa-kb.json</div><div class="assertion-evidence">No qa-kb.json concept exists</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Updates site-difficulty.json with login_required failure</div><div class="assertion-evidence">No domain tracking concept exists</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Appends failure note to Supabase jobs.notes</div><div class="assertion-evidence">Status updates may not happen correctly — no structured format</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">States only guest/one-click apply — no login flows</div><div class="assertion-evidence">Would likely waste 3 minutes on LinkedIn before giving up</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Eval 3 -->
+    <div id="eval3" class="eval-content">
+      <div class="eval-prompt">
+        <strong>Prompt</strong>
+        "Run the AI apply batch — I want to see which jobs it manages to apply to and which ones fail"
+      </div>
+      <div class="comparison">
+        <div class="output-box skill">
+          <div class="output-header">
+            <span class="config-skill">✅ with_skill</span>
+            <span class="score-chip full">6 / 6</span>
+          </div>
+          <div class="output-body">
+            <pre>5 JOBS SIMULATED:
+1. Acme Corp PM (lever.co) → ✅ Applied
+   - Guest apply found immediately
+   - Salary asked → saved to salary-kb
+   - Confirmation screenshot taken
+
+2. TechStartup Growth Lead (linkedin.com) → ❌ Failed
+   - Login wall, no guest path
+   - Fast-fail, no 3min waste
+   - site-difficulty: failure_count:1
+
+3. RemoteCo Head of Product (workable) → ✅ Applied
+   - Work auth Q answered/saved to qa-kb
+
+4. FinCorp Senior PM (greenhouse) → ✅ Applied
+   - 3 new qa-kb answers saved
+   - Salary asked → saved
+
+5. CaptchaLand PM (custom) → ❌ Failed
+   - CAPTCHA, retry once, then fail
+
+SITE-DIFFICULTY AFTER RUN:
+lever.co: success:1, fail:0
+linkedin.com: success:0, fail:1, [login_required]
+workable: success:1, fail:0
+greenhouse: success:1, fail:0
+captchaland: success:0, fail:1, [captcha]
+
+TERMINAL:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  AI Apply — Run Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Applied:   3
+  ❌ Failed:    2
+  ⏭  Skipped:   0
+  Total:  5 jobs | 16m 08s
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</pre>
+            <div class="assertions-grid">
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Correctly attempts all 5 (empty site-difficulty = no skips)</div><div class="assertion-evidence">"No domain has prior history → all 5 proceed normally"</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">LinkedIn failed with login_required</div><div class="assertion-evidence">Job 2: ❌ login_required, Supabase note includes reason</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">CaptchaLand failed with captcha</div><div class="assertion-evidence">Job 5: ❌ captcha, retry logic described</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">summary.md with markdown table and emoji indicators</div><div class="assertion-evidence">Full ✅/❌ table, KB update section, duration shown</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">Terminal output with bordered summary box format</div><div class="assertion-evidence">━ border format matching SKILL.md spec, with job list</div></div></div>
+              <div class="assertion pass-a"><span class="assertion-icon">✅</span><div><div class="assertion-text">site-difficulty.json shown with all domain entries</div><div class="assertion-evidence">Full JSON with success/failure counts and reasons for all 5 domains</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="output-box no-skill">
+          <div class="output-header">
+            <span class="config-baseline">❌ without_skill</span>
+            <span class="score-chip zero">0 / 6</span>
+          </div>
+          <div class="output-body">
+            <pre>WITHOUT SKILL — EXECUTION BLOCKED
+
+Would explore codebase, find any existing
+scripts in /workspaces/Jobhunter/scripts/
+
+KEY FAILURE MODES:
+- No dynamic DB fetch → hardcoded scripts
+  don't target live needs_apply queue
+- No interactive handling → unknown fields
+  crash scripts or submit blanks
+- Fragile success detection → misses
+  JS-rendered confirmations
+- Notes field: PATCH on failure overwrites
+  previous notes value (data loss!)
+- No salary population
+- No deduplication guard
+
+PREDICTED RESULTS:
+Job 1 (Lever) → PARTIAL
+Job 2 (LinkedIn) → FAIL (3min wasted)
+Job 3 (Workable) → PARTIAL
+Job 4 (Greenhouse) → FAIL
+Job 5 (CAPTCHA) → FAIL
+
+Applied confirmed: 0
+Site-difficulty tracked: NO
+Run folder created: NO
+Screenshots saved: NO
+Supabase updated: UNRELIABLE</pre>
+            <div class="assertions-grid">
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Correctly attempts all 5 based on site-difficulty</div><div class="assertion-evidence">No site-difficulty concept — no strategic awareness</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">LinkedIn failed with login_required (structured)</div><div class="assertion-evidence">LinkedIn identified as failing but no structured taxonomy or DB update</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">CaptchaLand failed with captcha (structured)</div><div class="assertion-evidence">CAPTCHA mentioned but no structured handling</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">summary.md with markdown table and emojis</div><div class="assertion-evidence">No summary.md — only predicted table in response</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">Terminal output with bordered summary box</div><div class="assertion-evidence">No terminal summary format</div></div></div>
+              <div class="assertion fail-a"><span class="assertion-icon">❌</span><div><div class="assertion-text">site-difficulty.json after run</div><div class="assertion-evidence">No site-difficulty.json concept exists</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENCHMARK TAB -->
+  <div id="panel-benchmark" class="panel">
+    <div class="bench-summary">
+      <div class="bench-card">
+        <div class="label">With Skill</div>
+        <div class="value green">100%</div>
+        <div class="sub">18 / 18 assertions passed</div>
+      </div>
+      <div class="bench-card">
+        <div class="label">Without Skill (Baseline)</div>
+        <div class="value red">5.6%</div>
+        <div class="sub">1 / 18 assertions passed</div>
+      </div>
+      <div class="bench-card">
+        <div class="label">Skill Improvement</div>
+        <div class="value blue">+94.4pp</div>
+        <div class="sub">+17 assertions gained</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Per-Eval Breakdown</h2>
+      <table>
+        <thead>
+          <tr><th>Eval</th><th>with_skill</th><th>without_skill</th><th>Delta</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>eval-batch-apply</td>
+            <td class="pass">6/6 (100%)</td>
+            <td class="fail">1/6 (17%)</td>
+            <td class="delta">+83pp</td>
+          </tr>
+          <tr>
+            <td>eval-specific-jobs</td>
+            <td class="pass">6/6 (100%)</td>
+            <td class="fail">0/6 (0%)</td>
+            <td class="delta">+100pp</td>
+          </tr>
+          <tr>
+            <td>eval-run-batch</td>
+            <td class="pass">6/6 (100%)</td>
+            <td class="fail">0/6 (0%)</td>
+            <td class="delta">+100pp</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Analyst Notes</h2>
+      <div class="analyst">
+        <p><strong>Only one assertion passes without the skill:</strong> Identifying the <code>status = needs_apply</code> Supabase filter. This is derivable from context (the field name is explicit). All other capabilities require the skill's guidance.</p>
+        <p><strong>Biggest gaps closed by the skill:</strong> Salary KB (per company::role), QA KB (fuzzy-matched reusable answers), site-difficulty learning (domain skip logic), candidate-profile loading (personal data without hardcoding), and the complete run output structure (apply-runs/, summary.md, screenshots, terminal summary).</p>
+        <p><strong>All assertions are discriminating</strong> except the Supabase query filter — they clearly separate skill vs no-skill behavior. No trivially easy assertions that would pass regardless.</p>
+        <p><strong>Real-world caveat:</strong> These evals test workflow planning and structure, not actual Playwright execution. Real hit rate will depend on site behavior and form structure. The site-difficulty learning mechanism is designed to improve over time as more sites are tested.</p>
+        <p><strong>Recommendation:</strong> The skill is production-ready for first use. Run a real batch of 3–5 jobs to populate site-difficulty.json and the knowledge bases, then review the apply-runs/ summary to calibrate further improvements.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+function showEval(id) {
+  document.querySelectorAll('.eval-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.eval-content').forEach(e => e.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

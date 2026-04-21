@@ -1,0 +1,23 @@
+{
+  "skill_name": "ai-apply",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Go ahead and apply to the jobs that are waiting in my tracker",
+      "expected_output": "Agent triggers the ai-apply skill, checks Playwright, loads preferences and site-difficulty.json, fetches needs_apply jobs from Supabase, and begins the per-job apply workflow",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I added 3 new jobs to my tracker with status needs_apply. Can you apply to them for me?",
+      "expected_output": "Agent invokes ai-apply skill, fetches those 3 jobs, attempts to apply using browser automation, asks for salary interactively, and updates statuses in Supabase based on results",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Run the AI apply batch — I want to see which jobs it manages to apply to and which ones fail",
+      "expected_output": "Agent runs ai-apply skill for a full batch, produces a summary.md in apply-runs/, prints terminal summary with applied/failed/skipped counts",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-run-batch",
+  "prompt": "Run the AI apply batch — I want to see which jobs it manages to apply to and which ones fail",
+  "assertions": [
+    {
+      "text": "Correctly skips or attempts all 5 jobs based on site-difficulty.json (empty = all attempted)",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Marks LinkedIn job as failed with reason login_required",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Marks CaptchaLand job as failed with reason captcha",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows summary.md with correct markdown table format including emoji result indicators",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows terminal output with the bordered summary box format from SKILL.md",
+      "passed": null,
+      "evidence": null
+    },
+    {
+      "text": "Shows site-difficulty.json after the run with correct domain entries and failure reasons",
+      "passed": null,
+      "evidence": null
+    }
+  ]
+}

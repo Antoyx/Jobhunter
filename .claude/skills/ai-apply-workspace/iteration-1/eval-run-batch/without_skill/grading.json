@@ -1,0 +1,36 @@
+{
+  "eval_id": 3,
+  "configuration": "without_skill",
+  "assertions": [
+    {
+      "text": "Correctly skips or attempts all 5 jobs based on site-difficulty.json (empty = all attempted)",
+      "passed": false,
+      "evidence": "No site-difficulty concept — would attempt all jobs but with no strategic awareness"
+    },
+    {
+      "text": "Marks LinkedIn job as failed with reason login_required",
+      "passed": false,
+      "evidence": "LinkedIn identified as likely failing but no structured failure reason taxonomy or Supabase update"
+    },
+    {
+      "text": "Marks CaptchaLand job as failed with reason captcha",
+      "passed": false,
+      "evidence": "CAPTCHA mentioned as a failure mode but no structured handling or DB update"
+    },
+    {
+      "text": "Shows summary.md with correct markdown table format including emoji result indicators",
+      "passed": false,
+      "evidence": "No summary.md — only a generic table in the response with predicted (not actual) outcomes"
+    },
+    {
+      "text": "Shows terminal output with the bordered summary box format from SKILL.md",
+      "passed": false,
+      "evidence": "No terminal summary format — results would only appear as inline text"
+    },
+    {
+      "text": "Shows site-difficulty.json after the run with correct domain entries and failure reasons",
+      "passed": false,
+      "evidence": "No site-difficulty.json concept exists without the skill"
+    }
+  ]
+}
