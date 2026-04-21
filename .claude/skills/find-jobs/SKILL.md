@@ -140,6 +140,8 @@ For each job in the trimmed list, fetch the URL using WebFetch. Confirm it's a v
 - Redirects to the job board's homepage (not a specific job)
 - Page contains phrases like "this job is no longer available", "position has been filled", "expired", "job not found"
 
+**If live:** extract the full job description text from the page (all body copy — responsibilities, requirements, about the company, etc.). Store this as the job's `description` for DB insertion.
+
 Keep a count of dead URLs for the summary.
 
 ---
@@ -201,7 +203,7 @@ await supabase.from('jobs').insert({
   salary_currency,     // string (e.g. "EUR", "USD")
   status: 'prospect',
   platform,            // domain of the job board (e.g. "linkedin.com")
-  description,         // first ~500 chars of job description text
+  description,         // full job description text (extracted from the verified listing page)
   source: 'find-jobs skill',
   notes                // "[estimated salary]" if estimated, else null
 })

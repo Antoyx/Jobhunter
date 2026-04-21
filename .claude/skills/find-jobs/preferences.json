@@ -1,17 +1,19 @@
 {
   "max_results": 20,
-  "locations": ["Barcelona", "Madrid", "Berlin", "Valencia", "Zurich", "Remote", "Hybrid"],
+  "locations": ["Barcelona", "Valencia", "Remote"],
   "job_types": ["full-time", "part-time", "contract"],
   "titles": [
+    "Solution Engineer",
+    "Sales engineer",
+    "Forward deployed Engineer"
+  ],
+  "_inactive_titles": [
     "Product Manager",
     "Delivery Manager",
     "Program Manager",
     "Project Manager",
     "Scrum Master",
-    "Technical Project Manager",
-    "Solution Engineer",
-    "Sales engineer",
-    "Forward deployed Engineer"
+    "Technical Project Manager"
   ],
   "salary_min": null,
   "salary_currency": "EUR",
