@@ -20,14 +20,13 @@ listings, verify they are live, and insert them into the Supabase `jobs` table a
 ## Quick-start checklist
 
 1. **Load preferences** from `preferences.json`
-2. **Load site difficulty data** from ai-apply's `site-difficulty.json`
-3. **Search** for jobs using WebSearch across multiple queries in parallel
-4. **Filter and score** results for relevance, location, salary, and site preference
-5. **Verify** each URL is live (HTTP 200, no "expired" page)
-6. **Deduplicate** against existing Supabase job URLs
-7. **Determine salary** (use listed salary or estimate + tag)
-8. **Insert** verified jobs into Supabase with `status: 'prospect'`
-9. **Print summary**
+2. **Search** for jobs using WebSearch across multiple queries in parallel
+3. **Filter and score** results for relevance, location, and salary
+4. **Verify** each URL is live (HTTP 200, no "expired" page)
+5. **Deduplicate** against existing Supabase job URLs
+6. **Determine salary** (use listed salary or estimate + tag)
+7. **Insert** verified jobs into Supabase with `status: 'prospect'`
+8. **Print summary**
 
 ---
 
@@ -38,7 +37,6 @@ All paths relative to `/workspaces/Jobhunter/`:
 | File | Purpose |
 |------|---------|
 | `.claude/skills/find-jobs/preferences.json` | Search preferences (titles, locations, etc.) |
-| `.claude/skills/ai-apply/site-difficulty.json` | Per-domain apply success/failure history (READ ONLY) |
 | `webapp/.env.local` | Supabase credentials |
 | `cv.md` | Candidate profile for relevance matching |
 
@@ -54,24 +52,12 @@ Read `.claude/skills/find-jobs/preferences.json`. All search parameters come fro
 - `titles` — target role titles
 - `salary_min` — minimum salary filter (null = no filter)
 - `salary_currency` — default currency for estimates
-- `site_preference` — `"any"`, `"ai_friendly"`, or `"manual_only"`
 - `keywords` — extra search keywords to include
 - `exclude_keywords` — terms that disqualify a listing
 
 ---
 
-## Step 2: Load site difficulty data
-
-Read `.claude/skills/ai-apply/site-difficulty.json`. Build:
-
-- `ai_friendly_domains`: domains where `success_count > 0`
-- `blocked_domains`: domains where `success_count == 0` AND 2+ failures with reasons `captcha`, `login_required`, or `no_guest_apply`
-
-These are used for scoring if `site_preference != "any"`. Do NOT write to this file — it is owned by the ai-apply skill.
-
----
-
-## Step 3: Search for jobs
+## Step 2: Search for jobs
 
 **Mandatory rotation — read this before writing a single query.**
 
@@ -105,7 +91,7 @@ For each result, collect: `company`, `title`, `url`, `location`, `description sn
 
 ---
 
-## Step 4: Filter and score results
+## Step 3: Filter and score results
 
 For each candidate job, apply these checks in order:
 
@@ -121,17 +107,12 @@ For each candidate job, apply these checks in order:
 
 4. **Exclude keywords** — skip if any `exclude_keywords` term appears in the title or description snippet.
 
-5. **Site preference scoring** — adjust rank (don't hard-remove) based on `site_preference`:
-   - `"ai_friendly"`: bump up listings from `ai_friendly_domains`, bump down `blocked_domains`
-   - `"manual_only"`: bump up `blocked_domains`, bump down `ai_friendly_domains`
-   - `"any"`: no site-based adjustment
-
-Sort by: relevance score → location match quality → site preference score.
+Sort by: relevance score → location match quality.
 Trim to `max_results` best candidates before verification.
 
 ---
 
-## Step 5: Verify each URL is live
+## Step 4: Verify each URL is live
 
 For each job in the trimmed list, fetch the URL using WebFetch. Confirm it's a valid, live listing:
 
@@ -146,7 +127,7 @@ Keep a count of dead URLs for the summary.
 
 ---
 
-## Step 6: Deduplicate against Supabase
+## Step 5: Deduplicate against Supabase
 
 Connect to Supabase using credentials from `webapp/.env.local`:
 - `NEXT_PUBLIC_SUPABASE_URL`
@@ -164,7 +145,7 @@ Build a Set of existing URLs. Skip silently any job whose URL is already in the 
 
 ---
 
-## Step 7: Determine salary
+## Step 6: Determine salary
 
 For each verified, non-duplicate job:
 
@@ -188,7 +169,7 @@ Then append `[estimated salary]` to the job's `notes` field.
 
 ---
 
-## Step 8: Insert into Supabase
+## Step 7: Insert into Supabase
 
 For each verified, deduplicated job:
 
@@ -213,7 +194,7 @@ If an insert fails, log the error and continue — don't abort the whole run.
 
 ---
 
-## Step 9: Print summary
+## Step 8: Print summary
 
 After all inserts, print:
 
@@ -256,5 +237,4 @@ Refer to `cv.md` in the project root for the full profile when assessing relevan
 - **Always tag estimated salary** — append `[estimated salary]` to `notes`
 - **Deduplicate silently** — no warnings, just skip
 - **Respect `max_results`** — cap total inserts per run
-- **Do not write to `site-difficulty.json`** — that file belongs to ai-apply
 - **Use `source: 'find-jobs skill'`** on all inserts

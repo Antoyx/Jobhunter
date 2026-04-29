@@ -1,7 +1,7 @@
 {
   "max_results": 20,
-  "locations": ["Barcelona", "Valencia", "Remote"],
-  "job_types": ["full-time", "part-time", "contract"],
+  "locations": ["Remote"],
+  "job_types": ["fixed-term", "temporary"],
   "titles": [
     "Solution Engineer",
     "Sales engineer",
@@ -13,16 +13,17 @@
     "Program Manager",
     "Project Manager",
     "Scrum Master",
-    "Technical Project Manager"
+    "Technical Project Manager",
+    "Customer Solutions Manager",
+    "Technical Account Manager",
+    "Solutions Consultant"
   ],
   "salary_min": null,
   "salary_currency": "EUR",
-  "site_preference": "any",
   "languages": ["English", "Finnish"],
   "keywords": [],
   "exclude_keywords": [],
   "_notes": {
-    "site_preference": "Options: 'ai_friendly' (prefer sites with known successful AI auto-apply history), 'any' (no site preference), 'manual_only' (prefer sites that require manual apply like captcha-protected ones)",
     "salary_min": "Set to a number (e.g. 50000) to filter out jobs below that salary. null means no minimum filter.",
     "locations": "Jobs must match one of these. 'Remote' and 'Hybrid' match any remote/hybrid role regardless of base location.",
     "exclude_keywords": "Any job containing these terms in title or description will be skipped. Example: ['internship', 'junior', 'unpaid']"
